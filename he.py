@@ -10,22 +10,20 @@ import wx
 target = ""
 
 class mainWindow(wx.Frame):
-    filename = ""
     
     def __init__(self, parent, title):
-        global target
         super(mainWindow, self).__init__(
-            parent, title=title, style=wx.DEFAULT_FRAME_STYLE, size=(250, 300)
+            parent, title=title, style=wx.DEFAULT_FRAME_STYLE, size=(400, 300)
         )
         self.Centre()
         self.InitUI()
-        filename = target
 
     def InitUI(self):
-        self.CreateStatusBar()
+        global target
+#        self.CreateStatusBar()
 
         panel = wx.Panel(self)
-        sizer = wx.GridBagSizer(2, 3)
+        sizer = wx.GridBagSizer(0, 0)
 
         st1 = wx.StaticText(panel, label="Target:")
         sizer.Add(
@@ -36,15 +34,14 @@ class mainWindow(wx.Frame):
         )
 
         self.targetname = wx.TextCtrl(panel)
-        self.targetname.SetValue = target
-        sizer.Add(self.targetname, pos=(0, 1), span=(1, 4), flag=wx.ALL | wx.ALIGN_LEFT | wx.TE_READONLY, border=5)
+        self.targetname.SetValue(str(target))
+        sizer.Add(self.targetname, pos=(0, 1), span=(1, 3), flag=wx.ALL | wx.ALIGN_LEFT, border=5)
 
         self.report = wx.TextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY)
         sizer.Add(
             self.report,
-            pos=(2, 0),
-            span=(0, 3),
-            flag=wx.EXPAND | wx.LEFT | wx.RIGHT,
+            pos=(2, 2),
+            flag=wx.EXPAND | wx.ALL,
             border=5,
         )
 
@@ -52,8 +49,24 @@ class mainWindow(wx.Frame):
 
         panel.SetSizer(sizer)
 
+        self.Many_Hash(target)
+
     def OnQuit(self, e):
         self.Close()
+
+    def Many_Hash(self, filename):
+        with open(filename, "rb") as f:
+            data = f.read()
+        md5 = hashlib.md5(data).hexdigest()
+        sha1 = hashlib.sha1(data).hexdigest()
+        sha256 = hashlib.sha256(data).hexdigest()
+        sha512 = hashlib.sha512(data).hexdigest()
+        self.report.AppendText("size: {:,}\n".format(len(data)))
+        self.report.AppendText("md5: {}\n".format(md5))
+        self.report.AppendText("sha1: {}\n".format(sha1))
+        self.report.AppendText("sha256: {}\n".format(sha256))
+        self.report.AppendText("sha512: {}\n".format(sha512))
+        
 
 
 def main():
@@ -70,7 +83,7 @@ def main():
 def create_parse():
     """ set up parser options """
     parser = argparse.ArgumentParser(description="file hashing shell extension")
-    parser.add_argument("target", help="file to be hashed", nargs=1)
+    parser.add_argument("target", help="file to be hashed")
     return parser
 
 
