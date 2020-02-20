@@ -9,8 +9,8 @@ import wx
 
 target = ""
 
+
 class mainWindow(wx.Frame):
-    
     def __init__(self, parent, title):
         super(mainWindow, self).__init__(
             parent, title=title, style=wx.DEFAULT_FRAME_STYLE, size=(400, 300)
@@ -20,7 +20,7 @@ class mainWindow(wx.Frame):
 
     def InitUI(self):
         global target
-#        self.CreateStatusBar()
+        #        self.CreateStatusBar()
 
         panel = wx.Panel(self)
         sizer = wx.GridBagSizer(0, 0)
@@ -35,14 +35,17 @@ class mainWindow(wx.Frame):
 
         self.targetname = wx.TextCtrl(panel)
         self.targetname.SetValue(str(target))
-        sizer.Add(self.targetname, pos=(0, 1), span=(1, 3), flag=wx.ALL | wx.ALIGN_LEFT, border=5)
+        sizer.Add(
+            self.targetname,
+            pos=(0, 1),
+            span=(1, 3),
+            flag=wx.ALL | wx.ALIGN_LEFT,
+            border=5,
+        )
 
         self.report = wx.TextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY)
         sizer.Add(
-            self.report,
-            pos=(2, 2),
-            flag=wx.EXPAND | wx.ALL,
-            border=5,
+            self.report, pos=(2, 2), flag=wx.EXPAND | wx.ALL, border=5,
         )
 
         sizer.AddGrowableRow(2)
@@ -66,7 +69,6 @@ class mainWindow(wx.Frame):
         self.report.AppendText("sha1: {}\n".format(sha1))
         self.report.AppendText("sha256: {}\n".format(sha256))
         self.report.AppendText("sha512: {}\n".format(sha512))
-        
 
 
 def main():
@@ -79,6 +81,7 @@ def main():
     frame = mainWindow(None, title="Hash utility")
     frame.Show()
     app.MainLoop()
+
 
 def create_parse():
     """ set up parser options """
