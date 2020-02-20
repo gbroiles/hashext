@@ -16,7 +16,14 @@ class MyFrame(wx.Frame):
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((432, 414))
-        self.list = wx.ListCtrl(self, wx.ID_ANY, style=wx.FULL_REPAINT_ON_RESIZE | wx.LC_HRULES | wx.LC_REPORT | wx.LC_VRULES)
+        self.list = wx.ListCtrl(
+            self,
+            wx.ID_ANY,
+            style=wx.FULL_REPAINT_ON_RESIZE
+            | wx.LC_HRULES
+            | wx.LC_REPORT
+            | wx.LC_VRULES,
+        )
 
         self.__set_properties()
         self.__do_layout()
@@ -29,8 +36,9 @@ class MyFrame(wx.Frame):
         self.list.SetMinSize((-1, -1))
         self.list.AppendColumn("Item", format=wx.LIST_FORMAT_LEFT, width=-1)
         self.list.AppendColumn("Value", format=wx.LIST_FORMAT_LEFT, width=-1)
-#        self.list.EnableAlternateRowColours(True)
-        # end wxGlade
+
+    #        self.list.EnableAlternateRowColours(True)
+    # end wxGlade
 
     def __do_layout(self):
         # begin wxGlade: MyFrame.__do_layout
@@ -40,7 +48,9 @@ class MyFrame(wx.Frame):
         self.Layout()
         # end wxGlade
 
+
 # end of class MyFrame
+
 
 class MyApp(wx.App):
     def OnInit(self):
@@ -67,12 +77,16 @@ class MyApp(wx.App):
         self.frame.list.Append(["sha1:", sha1.upper()])
         self.frame.list.Append(["sha256:", sha256.upper()])
         self.frame.list.Append(["sha512:", sha512.upper()])
-        self.frame.list.SetColumnWidth(0,-1)
-        self.frame.list.SetColumnWidth(1,-1)
-        self.frame.SetSize(self.frame.list.GetColumnWidth(0) + self.frame.list.GetColumnWidth(1) + 12, 135)
+        self.frame.list.SetColumnWidth(0, -1)
+        self.frame.list.SetColumnWidth(1, -1)
+        self.frame.SetSize(
+            self.frame.list.GetColumnWidth(0) + self.frame.list.GetColumnWidth(1) + 12,
+            135,
+        )
 
 
 # end of class MyApp
+
 
 def main():
     global target
@@ -88,6 +102,7 @@ def create_parse():
     parser = argparse.ArgumentParser(description="file hashing shell extension")
     parser.add_argument("target", help="file to be hashed")
     return parser
+
 
 if __name__ == "__main__":
     main()
