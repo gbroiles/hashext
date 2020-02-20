@@ -10,76 +10,76 @@ import wx
 target = ""
 
 
-class mainWindow(wx.Frame):
-    def __init__(self, parent, title):
-        super(mainWindow, self).__init__(
-            parent, title=title, style=wx.DEFAULT_FRAME_STYLE, size=(400, 300)
-        )
-        self.Centre()
-        self.InitUI()
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kwds):
+        # begin wxGlade: MyFrame.__init__
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
+        wx.Frame.__init__(self, *args, **kwds)
+        self.SetSize((432, 414))
+        self.list = wx.ListCtrl(self, wx.ID_ANY, style=wx.FULL_REPAINT_ON_RESIZE | wx.LC_HRULES | wx.LC_REPORT | wx.LC_VRULES)
 
-    def InitUI(self):
+        self.__set_properties()
+        self.__do_layout()
+        # end wxGlade
+
+    def __set_properties(self):
         global target
-        #        self.CreateStatusBar()
+        # begin wxGlade: MyFrame.__set_properties
+        self.SetTitle(target)
+        self.list.SetMinSize((-1, -1))
+        self.list.AppendColumn("Item", format=wx.LIST_FORMAT_LEFT, width=-1)
+        self.list.AppendColumn("Value", format=wx.LIST_FORMAT_LEFT, width=-1)
+#        self.list.EnableAlternateRowColours(True)
+        # end wxGlade
 
-        panel = wx.Panel(self)
-        sizer = wx.GridBagSizer(0, 0)
+    def __do_layout(self):
+        # begin wxGlade: MyFrame.__do_layout
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        sizer_1.Add(self.list, 3, wx.EXPAND, 0)
+        self.SetSizer(sizer_1)
+        self.Layout()
+        # end wxGlade
 
-        st1 = wx.StaticText(panel, label="Target:")
-        sizer.Add(
-            st1,
-            pos=(0, 0),
-            flag=wx.ALL | wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL,
-            border=5,
-        )
+# end of class MyFrame
 
-        self.targetname = wx.TextCtrl(panel)
-        self.targetname.SetValue(str(target))
-        sizer.Add(
-            self.targetname,
-            pos=(0, 1),
-            span=(1, 3),
-            flag=wx.ALL | wx.ALIGN_LEFT,
-            border=5,
-        )
-
-        self.report = wx.TextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        sizer.Add(
-            self.report, pos=(2, 2), flag=wx.EXPAND | wx.ALL, border=5,
-        )
-
-        sizer.AddGrowableRow(2)
-
-        panel.SetSizer(sizer)
-
+class MyApp(wx.App):
+    def OnInit(self):
+        self.frame = MyFrame(None, wx.ID_ANY, "")
+        self.SetTopWindow(self.frame)
         self.Many_Hash(target)
+        self.frame.Show()
+        return True
 
     def OnQuit(self, e):
         self.Close()
 
     def Many_Hash(self, filename):
+        global target
+        filename = target
         with open(filename, "rb") as f:
             data = f.read()
         md5 = hashlib.md5(data).hexdigest()
         sha1 = hashlib.sha1(data).hexdigest()
         sha256 = hashlib.sha256(data).hexdigest()
         sha512 = hashlib.sha512(data).hexdigest()
-        self.report.AppendText("size: {:,}\n".format(len(data)))
-        self.report.AppendText("md5: {}\n".format(md5))
-        self.report.AppendText("sha1: {}\n".format(sha1))
-        self.report.AppendText("sha256: {}\n".format(sha256))
-        self.report.AppendText("sha512: {}\n".format(sha512))
+        self.frame.list.Append(["size:", "{:,}".format(len(data))])
+        self.frame.list.Append(["md5:", md5.upper()])
+        self.frame.list.Append(["sha1:", sha1.upper()])
+        self.frame.list.Append(["sha256:", sha256.upper()])
+        self.frame.list.Append(["sha512:", sha512.upper()])
+        self.frame.list.SetColumnWidth(0,-1)
+        self.frame.list.SetColumnWidth(1,-1)
+        self.frame.SetSize(self.frame.list.GetColumnWidth(0) + self.frame.list.GetColumnWidth(1) + 12, 135)
 
+
+# end of class MyApp
 
 def main():
     global target
     parser = create_parse()
     args = parser.parse_args()
     target = args.target
-    print("target = {}".format(target))
-    app = wx.App()
-    frame = mainWindow(None, title="Hash utility")
-    frame.Show()
+    app = MyApp(0)
     app.MainLoop()
 
 
@@ -88,7 +88,6 @@ def create_parse():
     parser = argparse.ArgumentParser(description="file hashing shell extension")
     parser.add_argument("target", help="file to be hashed")
     return parser
-
 
 if __name__ == "__main__":
     main()
