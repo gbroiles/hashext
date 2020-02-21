@@ -8,11 +8,13 @@ import hashlib
 
 import PySimpleGUI as sg
 
+
 def create_parse():
     """ set up parser options """
     parser = argparse.ArgumentParser(description="file hashing shell extension")
     parser.add_argument("target", help="file to be hashed")
     return parser
+
 
 def Many_Hash(filename):
     """ calculate hashes for given filename """
@@ -25,6 +27,7 @@ def Many_Hash(filename):
     sha512 = hashlib.sha512(data).hexdigest()
     return len(data), md5, sha1, sha256, sha512
 
+
 def main():
     """ main event loop """
     parser = create_parse()
@@ -32,25 +35,28 @@ def main():
     target = args.target
     size, md5, sha1, sha256, sha512 = Many_Hash(target)
 
-    layout = [ [sg.Text(target)],
-           [sg.Text('Size: '), sg.In('{:,}'.format(size), key='size')],
-           [sg.Text('MD5: '), sg.In('{}'.format(md5), key='MD5')],
-           [sg.Text('SHA1: '), sg.In('{}'.format(sha1), key='SHA1')],
-           [sg.Text('SHA256: '), sg.In('{}'.format(sha256), key='SHA256')],
-           [sg.Text('SHA512: '), sg.In('{}'.format(sha512), key='SHA512')],
-           ]
+    layout = [
+        [sg.Text(target, font='Courier 12')],
+        [sg.Text("Size: "), sg.In("{:,}".format(size), key="size", font='Courier 8')],
+        [sg.Text("MD5: "), sg.In("{}".format(md5), key="MD5", font='Courier 8')],
+        [sg.Text("SHA1: "), sg.In("{}".format(sha1), key="SHA1", font='Courier 8')],
+        [sg.Text("SHA256: "), sg.In("{}".format(sha256), key="SHA256", font='Courier 8')],
+        [sg.Text("SHA512: "), sg.Multiline("{}".format(sha512), key="SHA512", size=(240,1), font='Courier 8')],
+    ]
 
-    window = sg.Window('File hash', layout, return_keyboard_events=True, grab_anywhere=False, size=(500, 200))
-
-    while True:
+    window = sg.Window(
+        "File hash",
+        layout,
+        return_keyboard_events=True,
+        grab_anywhere=False,
+        size=(650, 200),
+    )
+    while True:             
         event, values = window.read()
-
-        if event is not None:
-            size, md5, sha1, sha256, sha512 = Many_Hash(target)
-            window['MD5'].update(md5)
-            window['SHA1'].update(sha1)
-        else:
+        if event in (None, 'Cancel'):
             break
+
+    window.close()
 
 
 if __name__ == "__main__":
