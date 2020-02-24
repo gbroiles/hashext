@@ -36,12 +36,20 @@ def main():
     size, md5, sha1, sha256, sha512 = Many_Hash(target)
 
     layout = [
-        [sg.Text(target, font='Courier 12')],
-        [sg.Text("Size: "), sg.In("{:,}".format(size), key="size", font='Courier 8')],
-        [sg.Text("MD5: "), sg.In("{}".format(md5), key="MD5", font='Courier 8')],
-        [sg.Text("SHA1: "), sg.In("{}".format(sha1), key="SHA1", font='Courier 8')],
-        [sg.Text("SHA256: "), sg.In("{}".format(sha256), key="SHA256", font='Courier 8')],
-        [sg.Text("SHA512: "), sg.Multiline("{}".format(sha512), key="SHA512", size=(240,1), font='Courier 8')],
+        [sg.Text(target, font="Courier 12")],
+        [sg.Text("Size: "), sg.In("{:,}".format(size), key="size", font="Courier 8")],
+        [sg.Text("MD5: "), sg.In("{}".format(md5), key="MD5", font="Courier 8")],
+        [sg.Text("SHA1: "), sg.In("{}".format(sha1), key="SHA1", font="Courier 8")],
+        [
+            sg.Text("SHA256: "),
+            sg.In("{}".format(sha256), key="SHA256", font="Courier 8"),
+        ],
+        [
+            sg.Text("SHA512: "),
+            sg.Multiline(
+                "{}".format(sha512), key="SHA512", size=(240, 1), font="Courier 8"
+            ),
+        ],
     ]
 
     window = sg.Window(
@@ -51,9 +59,9 @@ def main():
         grab_anywhere=False,
         size=(650, 200),
     )
-    while True:             
+    while True:
         event, values = window.read()
-        if event in (None, 'Cancel'):
+        if event in (None, "Cancel"):
             break
 
     window.close()
