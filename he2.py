@@ -20,17 +20,17 @@ def Many_Hash(filename):
     """ calculate hashes for given filename """
     print("Hashing {}".format(filename))
     with open(filename, "rb") as f:
-#    with open(filename) as f:
+        #    with open(filename) as f:
         data = f.read()
-#    data = data.encode("UTF-8")
+    #    data = data.encode("UTF-8")
     md5 = hashlib.md5(data).hexdigest()
-#    print("MD5: {}".format(md5)) 
+    #    print("MD5: {}".format(md5))
     sha1 = hashlib.sha1(data).hexdigest()
-#    print("SHA1: {}".format(sha1)) 
+    #    print("SHA1: {}".format(sha1))
     sha256 = hashlib.sha256(data).hexdigest()
-#    print("SHA256: {}".format(sha256))
+    #    print("SHA256: {}".format(sha256))
     sha512 = hashlib.sha512(data).hexdigest()
-#    print("SHA512: {}".format(sha512)) 
+    #    print("SHA512: {}".format(sha512))
     return len(data), md5, sha1, sha256, sha512
 
 
